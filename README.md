@@ -1,7 +1,7 @@
 # ride share
 
 ### App like uber or like snap
-### writen with laravel 11 and vue js 3
+### written with laravel 11 and vue js 3
 
 
 
