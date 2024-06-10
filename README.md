@@ -27,3 +27,24 @@ php artisan migrate
 php artisan serve
 php artisan reverb:start
 ```
+
+## Frontend
+
+
+## Project Setup
+
+```sh
+npm install
+```
+
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
+```
+
+### Compile and Minify for Production
+
+```sh
+npm run build
+```
