@@ -18,7 +18,7 @@ class Trip extends Model
 
     public function driver()
     {
-        return $this->hasMany(Trip::class);
+        return $this->belongsTo(Driver::class);
     } 
 
     protected $casts = [

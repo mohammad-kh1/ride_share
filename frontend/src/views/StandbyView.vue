@@ -28,7 +28,7 @@
         </div>
         <div class="bg-gray-50 px-4 py-3 text-right sm:px-6 justify-between">
           <button
-            @click="handleConfirmTrip"
+            @click="acceptTrip"
             class="inline-flex justify-center rounded-md border border-trasnparent bg-black py-2 text-white p-5"
           >
             Accept
@@ -50,12 +50,47 @@ import { onMounted, ref } from "vue";
 import Loader from "../components/Lodaer.vue";
 import Echo from "laravel-echo";
 import { useTripStore } from "../stores/trip";
+import { useLocationStore } from "../stores/location";
 import Pusher from "pusher-js";
+import axios from "axios";
+import { useRouter } from "vue-router";
 
 const title = ref("Waitng for request...");
 const gMap = ref(null);
 
 const trip = useTripStore();
+const location = useLocationStore();
+
+const router = useRouter();
+
+const acceptTrip = () => {
+  axios
+    .post(
+      `http://localhost:8000/api/trip/${trip.id}/accept`,
+      {
+        driver_location: location.current.geometry,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    )
+    .then((res) => {
+      location.$patch({
+        destination: {
+          name: "Passenger",
+          geometry: res.data.origin,
+        },
+      });
+      router.push({
+        name: "driving",
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 const declineTrip = () => {
   trip.$patch({
@@ -75,10 +110,10 @@ const declineTrip = () => {
   });
 
   title.value = "Waitng for request...";
-
 };
 
-onMounted(() => {
+onMounted(async () => {
+  await location.updateCurrentLocation();
   let echo = new Echo({
     broadcaster: "reverb",
     key: "1imhphbk8ucxhcoebih7",

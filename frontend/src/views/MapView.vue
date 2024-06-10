@@ -39,6 +39,9 @@ import { useLocationStore } from "@/stores/location";
 import axios from "axios";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+import { useTripStore } from "@/stores/trip";
+
+const trip = useTripStore();
 
 const location = useLocationStore();
 
@@ -58,6 +61,7 @@ const handleConfirmTrip = () => {
         }
     })
     .then((res) => {
+      trip.$patch(res.data)
       router.push({
         name: "trip",
       });
